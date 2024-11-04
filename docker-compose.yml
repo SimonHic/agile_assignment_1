@@ -2,7 +2,7 @@ version: '3'
 networks:
    profile-network:
        external: true
-       name: 'mongo-network'
+       name: mongo-network
 
 volumes:
   profiledata:
@@ -14,21 +14,34 @@ services:
     container_name: movies-api
     ports:
       - '9000:9000'
+    environment:
+        - MONGODB_URI=mongodb://admin:secret@database:27017
+        - REDIS_URI=redis://redis
+        - ENABLE_WRITING_HANDLERS=false
     networks:
        - profile-network
     depends_on:
-      - databse
+      - database
+      - redis
 
-  databse:
-    container_name: mongoDB
+  redis:
+    image: redis:alpine
+    container_name: redis
+    networks:
+      - profile-network # Temp fix to specify network, will change later for network isolation
+
+  database:
+    container_name: mongodb
     image: mongo:8.0-rc
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
     networks:
-       - profile-network
+      - profile-network
+    ports:
+      - 27017:27017
     volumes:
-          - profiledata:/data/db
+      - profiledata:/data/db
 
   mongo-express:
     container_name: express
@@ -39,8 +52,8 @@ services:
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
       - ME_CONFIG_MONGODB_ADMINPASSWORD=secret
-      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:secret@database:27017/
     networks:
        - profile-network
     depends_on:
-      - databse          
+      - database     
