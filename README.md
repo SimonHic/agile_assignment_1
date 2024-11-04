@@ -11,7 +11,7 @@ This repository contains the containerization of the multi-container application
 ### Database Seeding.
 
 [Briefly explain how you automated the seeding of the application's database.]
--
+-Placeholder
 
 ### Multi-Stack.
 
