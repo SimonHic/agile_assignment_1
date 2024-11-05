@@ -64,8 +64,6 @@ services:
     command:
       mongoimport --authenticationDatabase=admin --db tmdb_movies --collection movies --drop --jsonArray --file /seeding.json mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@database:27017
       
-        
-
   mongo-express:
     container_name: express
     image: mongo-express:1.0-20-alpine3.19
