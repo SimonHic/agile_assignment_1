@@ -7,7 +7,7 @@ networks:
        name: redis-network
 
 volumes:
-  profiledata:
+  dbdata:
 
 services:
 
@@ -45,7 +45,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - profiledata:/data/db
+      - dbdata:/data/db
 
   mongo-express:
     container_name: express
