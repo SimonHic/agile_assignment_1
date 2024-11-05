@@ -1,7 +1,10 @@
 networks:
-   profile-network:
-       external: true
-       name: mongo-network
+   database-movies-network:
+       name: database-movies-network
+   database-express-network:
+       name: database-express-network
+   redis-network:
+       name: redis-network
 
 volumes:
   profiledata:
@@ -18,7 +21,8 @@ services:
         - REDIS_URI=redis://redis
         - ENABLE_WRITING_HANDLERS=false
     networks:
-       - profile-network
+       - database-movies-network
+       - redis-network
     depends_on:
       - database
       - redis
@@ -27,7 +31,7 @@ services:
     image: redis:alpine
     container_name: redis
     networks:
-      - profile-network # Temp fix to specify network, will change later for network isolation
+      - redis-network # Temp fix to specify network, will change later for network isolation
 
   database:
     container_name: mongodb
@@ -36,7 +40,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
     networks:
-      - profile-network
+      - database-movies-network
+      - database-express-network
     ports:
       - 27017:27017
     volumes:
@@ -53,6 +58,6 @@ services:
       - ME_CONFIG_MONGODB_ADMINPASSWORD=secret
       - ME_CONFIG_MONGODB_URL=mongodb://admin:secret@database:27017/
     networks:
-       - profile-network
+       - database-express-network
     depends_on:
       - database     
