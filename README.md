@@ -4,7 +4,7 @@ __Name:__ Simon Hickey
 
 __Demo:__ .... The link to your YouTube demonstration ....
 
-This repository contains the containerization of the multi-container application illustrated below.
+This repository contains the containerization of the multi-container application illustrated below:
 
 ![](./images/arch.png)
 
