@@ -5,6 +5,8 @@ networks:
        name: database-express-network
    redis-network:
        name: redis-network
+   database-seed-network:
+       name: database-seed-network    
 
 volumes:
   dbdata:
@@ -42,10 +44,27 @@ services:
     networks:
       - database-movies-network
       - database-express-network
+      - database-seed-network
     ports:
       - 27017:27017
     volumes:
       - dbdata:/data/db
+
+  mongodb-seed:
+    container_name: mongodb-seed
+    image: mongo:8.0-rc
+    depends_on:
+      - database
+    networks:
+      - database-seed-network
+    volumes:
+      - type: bind
+        source: ./seeding.json
+        target: /seeding.json
+    command:
+      mongoimport --authenticationDatabase=admin --db tmdb_movies --collection movies --drop --jsonArray --file /seeding.json mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@database:27017
+      
+        
 
   mongo-express:
     container_name: express
